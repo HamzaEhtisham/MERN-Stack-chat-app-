@@ -12,4 +12,14 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000, // Increase size limit to 1000kb
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom", "react-hot-toast"],
+        },
+      },
+    },
+  },
 });

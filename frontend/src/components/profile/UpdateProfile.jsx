@@ -92,6 +92,7 @@ const UpdateProfile = ({ onClose }) => {
               }
               className="w-full p-2 rounded bg-gray-700 text-white"
               minLength={6}
+              autoComplete="new-password"
             />
           </div>
           <div className="mb-4">
@@ -103,6 +104,7 @@ const UpdateProfile = ({ onClose }) => {
                 setInputs({ ...inputs, confirmPassword: e.target.value })
               }
               className="w-full p-2 rounded bg-gray-700 text-white"
+              autoComplete="new-password"
               minLength={6}
             />
           </div>

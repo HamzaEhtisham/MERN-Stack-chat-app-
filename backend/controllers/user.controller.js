@@ -1,6 +1,7 @@
-// controllers/user.controller.js
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import fs from "fs";
+import path from "path";
 
 export const updateProfile = async (req, res) => {
   try {
@@ -19,7 +20,14 @@ export const updateProfile = async (req, res) => {
       updateData.password = await bcrypt.hash(newPassword, salt);
     }
 
+    const user = await User.findById(userId);
+
     if (req.file) {
+      // Delete old profile pic if exists
+      if (user.profilePic) {
+        const oldPath = path.join(process.cwd(), user.profilePic);
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      }
       updateData.profilePic = `/uploads/${req.file.filename}`;
     }
 
@@ -36,12 +44,11 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// ✅ New function to fetch users for sidebar
+// ✅ Fetch all users except logged-in user
 export const getUsersForSidebar = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
 
-    // Get all users except the logged-in one
     const users = await User.find({ _id: { $ne: loggedInUserId } }).select(
       "-password"
     );

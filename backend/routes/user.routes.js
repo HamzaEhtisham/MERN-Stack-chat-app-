@@ -4,7 +4,7 @@ import {
   getUsersForSidebar,
   updateProfile,
 } from "../controllers/user.controller.js";
-import upload from "../middleware/upload.js"; // multer config file
+import upload from "../middleware/upload.js"; // multer config
 
 const router = express.Router();
 

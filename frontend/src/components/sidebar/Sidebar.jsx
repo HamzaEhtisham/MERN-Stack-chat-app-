@@ -7,28 +7,36 @@ const Sidebar = ({ isOpen, onClose }) => {
   return (
     <div
       className={`
-        border-r border-slate-500 p-4 flex flex-col h-full bg-gray-900 text-white
-        md:static md:translate-x-0 md:w-[380px]
-        fixed top-0 left-0 h-full w-full z-50 transform transition-transform duration-300
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        sidebar
+        ${isOpen ? "translate-x-0" : "sidebar-closed"}
       `}
     >
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Welcome</h1>
-        {/* Close button sirf mobile pe */}
-        <button className="md:hidden text-white text-xl" onClick={onClose}>
+      {/* Mobile Header */}
+      <div className="flex justify-between items-center mb-4 md:hidden">
+        <h1 className="text-xl font-bold">Menu</h1>
+        <button
+          onClick={onClose}
+          className="text-white text-lg bg-gray-700 px-2 py-1 rounded"
+        >
           ✖
         </button>
       </div>
 
+      {/* Desktop Title */}
+      <h1 className="hidden md:block text-2xl font-bold text-center mb-2">
+        Welcome
+      </h1>
+
       {/* Content */}
-      <SearchInput />
-      <div className="divider px-3"></div>
-      <ProfileButton />
-      <Conversations />
-      <LogoutButton />
+      <div className="flex flex-col gap-4">
+        <SearchInput />
+        <div className="divider px-3"></div>
+        <ProfileButton />
+        <Conversations />
+        <LogoutButton />
+      </div>
     </div>
   );
 };
+
 export default Sidebar;

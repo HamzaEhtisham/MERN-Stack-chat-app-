@@ -12,28 +12,37 @@ body {
 
 /* Responsive layout classes */
 @layer components {
+  /* Sidebar */
   .sidebar {
-    @apply fixed md:static w-full md:w-[380px] h-full transition-transform duration-300 ease-in-out bg-gray-800/95 backdrop-blur-sm;
+    @apply fixed inset-0 md:static 
+      w-full md:w-[380px] h-screen 
+      transition-transform duration-300 ease-in-out 
+      bg-gray-800/95 backdrop-blur-sm z-50 md:z-0;
   }
 
   .sidebar-closed {
     @apply -translate-x-full md:translate-x-0;
   }
 
+  /* Main container */
   .chat-container {
-    @apply flex flex-col md:flex-row h-[100dvh] overflow-hidden;
+    @apply flex h-screen w-screen overflow-hidden;
   }
 
+  /* Messages area */
   .messages-container {
-    @apply flex-1 flex flex-col w-full md:w-3/4 lg:w-4/5 bg-gray-900/80 backdrop-blur-sm;
+    @apply flex-1 flex flex-col h-screen w-full 
+      md:w-3/4 lg:w-4/5 bg-gray-900/80 backdrop-blur-sm;
   }
 
   .messages-list {
     @apply flex-1 overflow-y-auto p-4;
   }
 
+  /* Mobile bottom nav (optional) */
   .mobile-nav {
-    @apply md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 z-50;
+    @apply md:hidden fixed bottom-0 left-0 right-0 
+      bg-gray-800 border-t border-gray-700 z-50;
   }
 }
 

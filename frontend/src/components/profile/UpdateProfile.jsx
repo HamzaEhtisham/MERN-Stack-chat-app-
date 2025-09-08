@@ -45,12 +45,13 @@ const UpdateProfile = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-gray-800 rounded-lg p-8 w-full max-w-md">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
+      <div className="bg-gray-800 rounded-lg p-8 w-full max-w-md z-50">
         <h2 className="text-2xl font-bold mb-4 text-gray-200">
           Update Profile
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Profile Picture */}
           <div className="flex flex-col mb-4">
             <label className="text-gray-300 mb-2">Profile Picture</label>
             <input
@@ -70,6 +71,8 @@ const UpdateProfile = ({ onClose }) => {
               />
             )}
           </div>
+
+          {/* Username */}
           <div className="mb-4">
             <label className="text-gray-300 mb-2 block">Username</label>
             <input
@@ -82,6 +85,8 @@ const UpdateProfile = ({ onClose }) => {
               required
             />
           </div>
+
+          {/* New Password */}
           <div className="mb-4">
             <label className="text-gray-300 mb-2 block">New Password</label>
             <input
@@ -95,6 +100,8 @@ const UpdateProfile = ({ onClose }) => {
               autoComplete="new-password"
             />
           </div>
+
+          {/* Confirm Password */}
           <div className="mb-4">
             <label className="text-gray-300 mb-2 block">Confirm Password</label>
             <input
@@ -108,6 +115,8 @@ const UpdateProfile = ({ onClose }) => {
               minLength={6}
             />
           </div>
+
+          {/* Buttons */}
           <div className="flex justify-end gap-2">
             <button
               type="button"

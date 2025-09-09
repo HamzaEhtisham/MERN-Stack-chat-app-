@@ -1,32 +1,51 @@
 import { useSocketContext } from "../../context/SocketContext";
 import useConversation from "../../zustand/useConversation";
+import { FaUsers } from "react-icons/fa";
+import { useEffect } from "react";
 
 const Conversation = ({ conversation, lastIdx, emoji }) => {
 	const { selectedConversation, setSelectedConversation } = useConversation();
 
 	const isSelected = selectedConversation?._id === conversation._id;
 	const { onlineUsers } = useSocketContext();
-	const isOnline = onlineUsers.includes(conversation._id);
+	const isOnline = !conversation.isGroupChat && onlineUsers.includes(conversation._id);
+	
+	useEffect(() => {
+		console.log("Conversation props:", conversation);
+	}, [conversation]);
 
 	return (
 		<>
 			<div
-				className={`flex gap-2 items-center hover:bg-sky-500 rounded p-2 py-1 cursor-pointer
-				${isSelected ? "bg-sky-500" : ""}
+				className={`flex gap-3 items-center rounded-lg p-3 my-1 cursor-pointer transition-all duration-200 hover:bg-blue-600/70
+				${isSelected ? "bg-blue-600/80 shadow-md" : "bg-gray-700/40"}
 			`}
 				onClick={() => setSelectedConversation(conversation)}
 			>
-				<div className={`avatar ${isOnline ? "online" : ""}`}>
-					<div className='w-12 rounded-full'>
-						<img src={conversation.profilePic} alt='user avatar' />
+				{conversation.isGroupChat ? (
+					<div className="avatar">
+						<div className="w-12 rounded-full bg-blue-800 flex items-center justify-center shadow-inner">
+							<FaUsers className="text-blue-100 text-xl" />
+						</div>
 					</div>
-				</div>
+				) : (
+					<div className={`avatar ${isOnline ? "online" : ""}`}>
+						<div className='w-12 rounded-full ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-400'>
+							<img src={conversation.profilePic} alt='user avatar' />
+						</div>
+					</div>
+				)}
 
 				<div className='flex flex-col flex-1'>
-					<div className='flex gap-3 justify-between'>
-						<p className='font-bold text-gray-200'>{conversation.fullName}</p>
-						<span className='text-xl'>{emoji}</span>
+					<div className='flex gap-3 justify-between items-center'>
+						<p className='font-bold text-gray-100'>
+							{conversation.isGroupChat ? conversation.groupName : conversation.fullName}
+						</p>
+						{!conversation.isGroupChat && <span className='text-xl'>{emoji}</span>}
 					</div>
+					{conversation.isGroupChat && (
+						<p className="text-blue-200 text-xs font-medium">{conversation.participants?.length || 0} members</p>
+					)}
 				</div>
 			</div>
 

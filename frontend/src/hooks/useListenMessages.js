@@ -17,7 +17,18 @@ const useListenMessages = () => {
 			setMessages([...messages, newMessage]);
 		});
 
-		return () => socket?.off("newMessage");
+		// Listen for group messages
+		socket?.on("newGroupMessage", (newMessage) => {
+			newMessage.shouldShake = true;
+			const sound = new Audio(notificationSound);
+			sound.play();
+			setMessages([...messages, newMessage]);
+		});
+
+		return () => {
+			socket?.off("newMessage");
+			socket?.off("newGroupMessage");
+		};
 	}, [socket, setMessages, messages]);
 };
 export default useListenMessages;

@@ -7,10 +7,17 @@ const messageSchema = new mongoose.Schema(
 			ref: "User",
 			required: true,
 		},
+		senderName: {
+			type: String,
+			// For group chats to display sender name
+		},
 		receiverId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			required: true,
+		},
+		conversationId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Conversation",
 		},
 		message: {
 			type: String,

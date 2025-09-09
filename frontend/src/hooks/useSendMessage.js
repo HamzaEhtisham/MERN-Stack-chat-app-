@@ -9,7 +9,11 @@ const useSendMessage = () => {
 	const sendMessage = async (message) => {
 		setLoading(true);
 		try {
-			const res = await fetch(`/api/messages/send/${selectedConversation._id}`, {
+			let endpoint = selectedConversation.isGroupChat 
+				? `/api/messages/group/send/${selectedConversation._id}` 
+				: `/api/messages/send/${selectedConversation._id}`;
+
+			const res = await fetch(endpoint, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

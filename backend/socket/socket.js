@@ -11,6 +11,7 @@ const io = new Server(server, {
       "http://localhost:3000",
       "http://localhost:5000",
       "https://mern-stack-chat-app-f91s.onrender.com",
+      "https://5000-firebase-mern-stack-chat-app-1757375829508.cluster-6dx7corvpngoivimwvvljgokdw.cloudworkstations.dev",
     ],
     methods: ["GET", "POST"],
     credentials: true,

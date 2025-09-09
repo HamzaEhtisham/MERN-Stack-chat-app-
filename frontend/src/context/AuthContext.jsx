@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "../store";
 
 export const AuthContext = createContext();
 
@@ -8,7 +10,12 @@ export const useAuthContext = () => {
 };
 
 export const AuthContextProvider = ({ children }) => {
-	const [authUser, setAuthUser] = useState(JSON.parse(localStorage.getItem("chat-user")) || null);
+	const dispatch = useDispatch();
+	const authUser = JSON.parse(localStorage.getItem("chat-user")) || null;
 
-	return <AuthContext.Provider value={{ authUser, setAuthUser }}>{children}</AuthContext.Provider>;
+	useEffect(() => {
+		dispatch(setAuthUser(authUser));
+	}, [dispatch, authUser]);
+
+	return <AuthContext.Provider value={{ authUser }}>{children}</AuthContext.Provider>;
 };

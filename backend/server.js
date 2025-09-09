@@ -7,6 +7,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import groupRoutes from "./routes/group.routes.js";
 import connectToMongoDB from "./db/connectToMongoDB.js";
 import { app, server } from "./socket/socket.js";
 
@@ -22,6 +23,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:5000",
       "https://mern-stack-chat-app-f91s.onrender.com",
+      "https://5000-firebase-mern-stack-chat-app-1757375829508.cluster-6dx7corvpngoivimwvvljgokdw.cloudworkstations.dev",
     ],
     credentials: true,
   })
@@ -31,6 +33,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/groups", groupRoutes);
 
 // Serve uploaded profile pictures
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));

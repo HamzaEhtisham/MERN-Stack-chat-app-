@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setConversations } from "../store";
 
 const useGetConversations = () => {
 	const [loading, setLoading] = useState(false);
-	const [conversations, setConversations] = useState([]);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		const getConversations = async () => {
@@ -14,7 +16,7 @@ const useGetConversations = () => {
 				if (data.error) {
 					throw new Error(data.error);
 				}
-				setConversations(data);
+				dispatch(setConversations(data));
 			} catch (error) {
 				toast.error(error.message);
 			} finally {
@@ -23,8 +25,8 @@ const useGetConversations = () => {
 		};
 
 		getConversations();
-	}, []);
+	}, [dispatch]);
 
-	return { loading, conversations };
+	return { loading };
 };
 export default useGetConversations;

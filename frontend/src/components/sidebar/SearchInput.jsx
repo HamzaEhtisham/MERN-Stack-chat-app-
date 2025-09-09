@@ -28,21 +28,21 @@ const SearchInput = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center gap-2 w-full max-w-md mx-auto"
+      className="flex items-center gap-2 w-full"
     >
       <div className="relative flex-1">
         <input
           type="text"
-          placeholder="Search…"
-          className="input input-bordered rounded-full w-full pr-10 bg-gray-700/50 focus:bg-gray-700"
+          placeholder="Search..."
+          className="w-full py-2 pl-4 pr-10 rounded-full bg-gray-800 text-gray-300 border border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <button
           type="submit"
-          className="btn btn-circle bg-sky-500 text-white absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 min-h-0 flex items-center justify-center"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-500 transition-colors"
         >
-          <IoSearchSharp className="w-4 h-4" />
+          <IoSearchSharp className="w-5 h-5" />
         </button>
       </div>
     </form>

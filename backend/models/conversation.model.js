@@ -10,6 +10,10 @@ const conversationSchema = new mongoose.Schema(
 			type: String,
 			trim: true,
 		},
+		groupPic: {
+			type: String,
+			default: "/uploads/default-group.png",
+		},
 		groupAdmin: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",

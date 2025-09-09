@@ -4,8 +4,10 @@ import {
 	getGroupChats,
 	addToGroup,
 	removeFromGroup,
+	updateGroupProfile,
 } from "../controllers/group.controller.js";
 import protectRoute from "../middleware/protectRoute.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -20,5 +22,8 @@ router.put("/add", protectRoute, addToGroup);
 
 // Remove a user from a group
 router.put("/remove", protectRoute, removeFromGroup);
+
+// Update group profile
+router.put("/:id/update", protectRoute, upload.single("groupPic"), updateGroupProfile);
 
 export default router;

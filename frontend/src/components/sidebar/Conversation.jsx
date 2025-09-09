@@ -17,21 +17,27 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 	return (
 		<>
 			<div
-				className={`flex gap-3 items-center rounded-lg p-3 my-1 cursor-pointer transition-all duration-200 hover:bg-blue-600/70
-				${isSelected ? "bg-blue-600/80 shadow-md" : "bg-gray-700/40"}
+				className={`flex gap-3 items-center rounded-lg p-3 my-2 cursor-pointer transition-all duration-200 hover:bg-gray-700
+				${isSelected ? "bg-blue-600/80 shadow-md" : "bg-gray-800/40"}
 			`}
 				onClick={() => setSelectedConversation(conversation)}
 			>
 				{conversation.isGroupChat ? (
 					<div className="avatar">
-						<div className="w-12 rounded-full bg-blue-800 flex items-center justify-center shadow-inner">
-							<FaUsers className="text-blue-100 text-xl" />
+						<div className="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-400">
+							{conversation.groupPic ? (
+								<img src={conversation.groupPic} alt="group avatar" className="object-cover" />
+							) : (
+								<div className="w-full h-full bg-blue-800 flex items-center justify-center shadow-inner">
+									<FaUsers className="text-blue-100 text-xl" />
+								</div>
+							)}
 						</div>
 					</div>
 				) : (
 					<div className={`avatar ${isOnline ? "online" : ""}`}>
-						<div className='w-12 rounded-full ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-400'>
-							<img src={conversation.profilePic} alt='user avatar' />
+						<div className='w-12 h-12 rounded-full ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-400'>
+							<img src={conversation.profilePic} alt='user avatar' className="object-cover" />
 						</div>
 					</div>
 				)}
@@ -49,7 +55,7 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 				</div>
 			</div>
 
-			{!lastIdx && <div className='divider my-0 py-0 h-1' />}
+			{!lastIdx && <div className='border-t border-gray-800/50 my-1' />}
 		</>
 	);
 };

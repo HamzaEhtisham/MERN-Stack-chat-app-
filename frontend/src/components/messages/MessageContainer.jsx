@@ -1,16 +1,26 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import useConversation from "../../zustand/useConversation";
 import MessageInput from "./MessageInput";
 import Messages from "./Messages";
 import { TiMessages } from "react-icons/ti";
-import { FaUsers } from "react-icons/fa";
+import { FaUsers, FaUsersCog, FaEdit } from "react-icons/fa";
 import { BsCircleFill } from "react-icons/bs";
 import { useAuthContext } from "../../context/AuthContext";
 import { useSocketContext } from "../../context/SocketContext";
+import GroupProfileModal from "../group/GroupProfileModal";
+import GroupMembersModal from "../group/GroupMembersModal";
+import toast from "react-hot-toast";
 
 const MessageContainer = () => {
 	const { selectedConversation, setSelectedConversation } = useConversation();
 	const { socket } = useSocketContext();
+	const { authUser } = useAuthContext();
+	
+	const [showGroupProfileModal, setShowGroupProfileModal] = useState(false);
+	const [showGroupMembersModal, setShowGroupMembersModal] = useState(false);
+	
+	const isGroupAdmin = selectedConversation?.isGroupChat && 
+		selectedConversation?.groupAdmin?._id === authUser?._id;
 
 	useEffect(() => {
 		// Join group chat room when selected conversation changes
@@ -26,6 +36,25 @@ const MessageContainer = () => {
 			// Don't reset selectedConversation on unmount to preserve selection
 		};
 	}, [selectedConversation, socket, setSelectedConversation]);
+	
+	// Listen for group updates
+	useEffect(() => {
+		if (!socket) return;
+		
+		socket.on("groupUpdated", (updatedGroup) => {
+			console.log("Group updated:", updatedGroup);
+			
+			// Update the selected conversation if it's the same group
+			if (selectedConversation?._id === updatedGroup._id) {
+				setSelectedConversation(updatedGroup);
+				toast.success("Group information updated");
+			}
+		});
+		
+		return () => {
+			socket.off("groupUpdated");
+		};
+	}, [socket, selectedConversation, setSelectedConversation]);
 
 	return (
 		<div className='md:min-w-[450px] flex flex-col h-full'>
@@ -36,13 +65,39 @@ const MessageContainer = () => {
 					{/* Header */}
 					<div className='bg-gray-800/90 px-6 py-4 mb-2 shadow-md border-b border-gray-700/50'>
 						{selectedConversation.isGroupChat ? (
-							<div className="flex items-center gap-3">
-								<div className="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center shadow-inner">
-									<FaUsers className="text-blue-100 text-xl" />
+							<div className="flex items-center justify-between w-full">
+								<div className="flex items-center gap-3">
+									<div className="w-10 h-10 rounded-full ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-800">
+										{selectedConversation.groupPic ? (
+											<img src={selectedConversation.groupPic} alt="group avatar" className="w-full h-full rounded-full object-cover" />
+										) : (
+											<div className="w-full h-full rounded-full bg-blue-800 flex items-center justify-center shadow-inner">
+												<FaUsers className="text-blue-100 text-xl" />
+											</div>
+										)}
+									</div>
+									<div>
+										<span className='text-gray-100 font-bold text-lg'>{selectedConversation.groupName}</span>
+										<p className="text-blue-300 text-xs font-medium">{selectedConversation.participants?.length || 0} members</p>
+									</div>
 								</div>
-								<div>
-									<span className='text-gray-100 font-bold text-lg'>{selectedConversation.groupName}</span>
-									<p className="text-blue-300 text-xs font-medium">{selectedConversation.participants?.length || 0} members</p>
+								<div className="flex items-center gap-2">
+									{isGroupAdmin && (
+										<button 
+											onClick={() => setShowGroupProfileModal(true)}
+											className="p-2 text-blue-300 hover:text-blue-400 hover:bg-gray-700 rounded-full transition-colors"
+											title="Edit Group Profile"
+										>
+											<FaEdit />
+										</button>
+									)}
+									<button 
+										onClick={() => setShowGroupMembersModal(true)}
+										className="p-2 text-blue-300 hover:text-blue-400 hover:bg-gray-700 rounded-full transition-colors"
+										title="Manage Group Members"
+									>
+										<FaUsersCog />
+									</button>
 								</div>
 							</div>
 						) : (
@@ -64,6 +119,23 @@ const MessageContainer = () => {
 					</div>
 					<Messages />
 					<MessageInput />
+					
+					{/* Group Modals */}
+					{showGroupProfileModal && (
+						<GroupProfileModal 
+							isOpen={showGroupProfileModal} 
+							onClose={() => setShowGroupProfileModal(false)} 
+							group={selectedConversation} 
+						/>
+					)}
+					
+					{showGroupMembersModal && (
+						<GroupMembersModal 
+							isOpen={showGroupMembersModal} 
+							onClose={() => setShowGroupMembersModal(false)} 
+							group={selectedConversation} 
+						/>
+					)}
 				</>
 			)}
 		</div>

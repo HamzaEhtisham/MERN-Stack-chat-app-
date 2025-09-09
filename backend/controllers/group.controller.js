@@ -1,6 +1,8 @@
 import Conversation from "../models/conversation.model.js";
 import User from "../models/user.model.js";
 import { io } from "../socket/socket.js";
+import fs from "fs";
+import path from "path";
 
 // Create a new group chat
 export const createGroupChat = async (req, res) => {
@@ -139,6 +141,60 @@ export const removeFromGroup = async (req, res) => {
 		res.status(200).json(updated);
 	} catch (error) {
 		console.log("Error in removeFromGroup controller: ", error.message);
+		res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+// Update group profile
+export const updateGroupProfile = async (req, res) => {
+	try {
+		const { id: groupId } = req.params;
+		const { groupName } = req.body;
+		const currentUserId = req.user._id;
+
+		// Check if the current user is the admin of the group
+		const group = await Conversation.findOne({
+			_id: groupId,
+			groupAdmin: currentUserId,
+		});
+
+		if (!group) {
+			return res.status(403).json({ error: "Only group admin can update group profile" });
+		}
+
+		// Prepare update data
+		let updateData = {};
+		if (groupName) updateData.groupName = groupName;
+
+		// Handle group profile picture upload
+		if (req.file) {
+			// Delete old group pic if exists and not the default
+			if (group.groupPic && !group.groupPic.includes('default-group.png')) {
+				const oldPath = path.join(process.cwd(), group.groupPic);
+				if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+			}
+			updateData.groupPic = `/uploads/${req.file.filename}`;
+		}
+
+		// Update group profile
+		const updated = await Conversation.findByIdAndUpdate(
+			groupId,
+			updateData,
+			{ new: true }
+		)
+			.populate("participants", "-password")
+			.populate("groupAdmin", "-password");
+
+		if (!updated) {
+			return res.status(404).json({ error: "Group not found" });
+		}
+
+		// Notify all participants about the update
+		io.emit("groupUpdated", updated);
+
+		res.status(200).json(updated);
+	} catch (error) {
+		console.log("Error in updateGroupProfile controller: ", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };

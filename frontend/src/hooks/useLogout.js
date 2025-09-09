@@ -14,6 +14,7 @@ const useLogout = () => {
 			const res = await fetch("/api/auth/logout", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
+				credentials: "include",
 			});
 			const data = await res.json();
 			if (data.error) {
@@ -23,7 +24,6 @@ const useLogout = () => {
 			localStorage.removeItem("chat-user");
 			setAuthUser(null);
 			navigate("/login");
-			toast.success("Logged out successfully");
 		} catch (error) {
 			toast.error(error.message);
 		} finally {
@@ -31,6 +31,17 @@ const useLogout = () => {
 		}
 	};
 
-	return { loading, logout };
+	// Function to force clear JWT cookie and localStorage
+	const forceLogout = () => {
+		// Clear localStorage
+		localStorage.removeItem("chat-user");
+		setAuthUser(null);
+		
+		// Redirect to login page
+		navigate("/login");
+		toast.success("Please login again to refresh your session");
+	};
+
+	return { loading, logout, forceLogout };
 };
 export default useLogout;

@@ -14,7 +14,9 @@ const useGetMessages = () => {
 					? `/api/messages/group/${selectedConversation._id}`
 					: `/api/messages/${selectedConversation._id}`;
 
-				const res = await fetch(endpoint);
+				const res = await fetch(endpoint, {
+					credentials: "include",
+				});
 				const data = await res.json();
 				if (data.error) throw new Error(data.error);
 				setMessages(data);

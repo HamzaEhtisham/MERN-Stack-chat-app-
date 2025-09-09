@@ -13,7 +13,9 @@ const useGetConversations = () => {
 		try {
 			// Fetch personal conversations
 			try {
-				const res = await fetch("/api/users");
+				const res = await fetch("/api/users", {
+					credentials: "include",
+				});
 				if (!res.ok) {
 					throw new Error(`HTTP error! Status: ${res.status}`);
 				}
@@ -31,7 +33,9 @@ const useGetConversations = () => {
 
 			// Fetch group chats
 			try {
-				const groupRes = await fetch("/api/groups");
+				const groupRes = await fetch("/api/groups", {
+					credentials: "include",
+				});
 				if (!groupRes.ok) {
 					throw new Error(`HTTP error! Status: ${groupRes.status}`);
 				}

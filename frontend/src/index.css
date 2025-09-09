@@ -117,3 +117,17 @@ body {
     transform: translate3d(4px, 0, 0);
   }
 }
+
+/* Online status indicator */
+.avatar.online:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25%;
+  height: 25%;
+  border-radius: 50%;
+  background-color: #10b981;
+  border: 2px solid #1f2937;
+  z-index: 10;
+}

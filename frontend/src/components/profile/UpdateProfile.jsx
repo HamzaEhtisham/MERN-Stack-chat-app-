@@ -29,6 +29,7 @@ const UpdateProfile = ({ onClose }) => {
       const res = await fetch(`/api/users/profile`, {
         method: "PUT",
         body: formData,
+        credentials: "include",
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);

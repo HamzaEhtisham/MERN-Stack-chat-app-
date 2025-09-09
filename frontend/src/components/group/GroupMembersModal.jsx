@@ -15,7 +15,9 @@ const GroupMembersModal = ({ isOpen, onClose, group }) => {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const res = await fetch("/api/users");
+        const res = await fetch("/api/users", {
+          credentials: "include",
+        });
         const data = await res.json();
         if (data.error) {
           throw new Error(data.error);
@@ -43,6 +45,7 @@ const GroupMembersModal = ({ isOpen, onClose, group }) => {
           groupId: group._id,
           userId,
         }),
+        credentials: "include",
       });
 
       const data = await res.json();
@@ -74,6 +77,7 @@ const GroupMembersModal = ({ isOpen, onClose, group }) => {
           groupId: group._id,
           userId,
         }),
+        credentials: "include",
       });
 
       const data = await res.json();

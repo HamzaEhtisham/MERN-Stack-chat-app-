@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
+import { useSocketContext } from "../../context/SocketContext";
 import UpdateProfile from "../profile/UpdateProfile";
 import { FaUser, FaCamera, FaSignOutAlt } from "react-icons/fa";
 import usePreviewImg from "../../hooks/usePreviewImg";
@@ -7,11 +8,14 @@ import toast from "react-hot-toast";
 
 const ProfileButton = () => {
   const { authUser, setAuthUser } = useAuthContext();
+  const { onlineUsers } = useSocketContext();
   const [showUpdateProfile, setShowUpdateProfile] = useState(false);
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { handleImageChange } = usePreviewImg();
   const [loading, setLoading] = useState(false);
+  
+  const isOnline = authUser && onlineUsers.includes(authUser._id);
 
   const handleQuickProfilePicChange = async (e) => {
     const file = e.target.files[0];
@@ -27,6 +31,7 @@ const ProfileButton = () => {
       const res = await fetch(`/api/users/profile`, {
         method: "PUT",
         body: formData,
+        credentials: "include",
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
@@ -55,20 +60,25 @@ const ProfileButton = () => {
           onClick={() => setShowProfileOptions(prev => !prev)}
           className="flex items-center gap-3 hover:bg-gray-700 py-3 px-4 rounded-lg transition-colors w-full"
         >
-          <div className="relative">
-            {loading ? (
-              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gray-700">
-                <span className="loading loading-spinner loading-sm"></span>
-              </div>
-            ) : (
-              <img
-                src={authUser?.profilePic || "https://via.placeholder.com/40"}
-                alt="profile"
-                className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-800"
-              />
-            )}
+          <div className={`avatar relative ${isOnline ? "online" : ""}`}>
+            <div className="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-400">
+              {loading ? (
+                <div className="w-full h-full rounded-full flex items-center justify-center bg-gray-700">
+                  <span className="loading loading-spinner loading-sm"></span>
+                </div>
+              ) : (
+                <img
+                  src={authUser?.profilePic || "https://via.placeholder.com/40"}
+                  alt="profile"
+                  className="object-cover"
+                />
+              )}
+            </div>
           </div>
-          <span className="text-gray-200 font-medium">{authUser?.username}</span>
+          <div>
+            <span className="text-gray-200 font-medium block">{authUser?.username}</span>
+            <span className="text-xs text-gray-400">{isOnline ? "Online" : "Offline"}</span>
+          </div>
         </button>
 
         {showProfileOptions && (

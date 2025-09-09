@@ -5,6 +5,7 @@ import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import { Toaster } from "react-hot-toast";
 import { useAuthContext } from "./context/AuthContext";
+import SessionRefreshButton from "./components/shared/SessionRefreshButton";
 
 function App() {
 	const { authUser } = useAuthContext();
@@ -16,6 +17,7 @@ function App() {
 				<Route path='/signup' element={authUser ? <Navigate to='/' /> : <SignUp />} />
 			</Routes>
 			<Toaster />
+			{authUser && <SessionRefreshButton />}
 		</div>
 	);
 }

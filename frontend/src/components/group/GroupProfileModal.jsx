@@ -27,6 +27,7 @@ const GroupProfileModal = ({ isOpen, onClose, group }) => {
       const res = await fetch(`/api/groups/${group._id}/update`, {
         method: "PUT",
         body: formData,
+        credentials: "include",
       });
 
       const data = await res.json();

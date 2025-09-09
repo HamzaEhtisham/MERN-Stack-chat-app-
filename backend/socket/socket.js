@@ -1,6 +1,16 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const rootDir = path.dirname(path.dirname(path.dirname(__filename)));
+
+// Load environment variables from the root directory
+dotenv.config({ path: path.join(rootDir, '.env') });
 
 const app = express();
 

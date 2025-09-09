@@ -1,6 +1,15 @@
-import express from "express";
-import path from "path";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const rootDir = path.dirname(path.dirname(__filename));
+
+// Load environment variables from the root directory
+dotenv.config({ path: path.join(rootDir, '.env') });
+
+import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -10,10 +19,8 @@ import userRoutes from "./routes/user.routes.js";
 import groupRoutes from "./routes/group.routes.js";
 import connectToMongoDB from "./db/connectToMongoDB.js";
 import { app, server } from "./socket/socket.js";
-
-dotenv.config();
 const __dirname = path.resolve();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.use(express.json());
 app.use(cookieParser());
@@ -25,6 +32,8 @@ app.use(
       "https://mern-stack-chat-app-f91s.onrender.com",
     ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 

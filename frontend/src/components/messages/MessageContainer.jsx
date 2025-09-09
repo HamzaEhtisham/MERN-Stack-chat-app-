@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 
 const MessageContainer = () => {
 	const { selectedConversation, setSelectedConversation } = useConversation();
-	const { socket } = useSocketContext();
+	const { socket, onlineUsers } = useSocketContext();
 	const { authUser } = useAuthContext();
 	
 	const [showGroupProfileModal, setShowGroupProfileModal] = useState(false);
@@ -110,8 +110,8 @@ const MessageContainer = () => {
 								<div>
 									<span className='text-gray-100 font-bold text-lg'>{selectedConversation.fullName}</span>
 									<div className="flex items-center gap-1">
-										<BsCircleFill className={`${socket.onlineUsers?.includes(selectedConversation._id) ? "text-green-500" : "text-gray-500"} text-[8px]`} />
-										<span className="text-xs text-gray-300">{socket.onlineUsers?.includes(selectedConversation._id) ? "Online" : "Offline"}</span>
+										<BsCircleFill className={`${onlineUsers?.includes(selectedConversation._id) ? "text-green-500" : "text-gray-500"} text-[8px]`} />
+										<span className="text-xs text-gray-300">{onlineUsers?.includes(selectedConversation._id) ? "Online" : "Offline"}</span>
 									</div>
 								</div>
 							</div>

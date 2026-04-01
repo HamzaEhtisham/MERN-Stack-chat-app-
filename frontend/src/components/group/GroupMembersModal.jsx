@@ -114,9 +114,10 @@ const GroupMembersModal = ({ isOpen, onClose, group }) => {
               <div key={user._id} className="flex items-center justify-between mb-2 p-2 hover:bg-gray-600 rounded">
                 <div className="flex items-center">
                   <img
-                    src={user.profilePic}
+                    src={user.profilePic || `https://ui-avatars.com/api/?name=${user.fullName || 'User'}&background=0D8ABC&color=fff`}
                     alt={user.fullName}
                     className="w-8 h-8 rounded-full object-cover mr-2"
+                    onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user.fullName || 'User'}&background=0D8ABC&color=fff`; }}
                   />
                   <span className="text-gray-200">
                     {user.fullName}
@@ -151,9 +152,10 @@ const GroupMembersModal = ({ isOpen, onClose, group }) => {
                   <div key={user._id} className="flex items-center justify-between mb-2 p-2 hover:bg-gray-600 rounded">
                     <div className="flex items-center">
                       <img
-                        src={user.profilePic}
+                        src={user.profilePic || `https://ui-avatars.com/api/?name=${user.fullName || 'User'}&background=0D8ABC&color=fff`}
                         alt={user.fullName}
                         className="w-8 h-8 rounded-full object-cover mr-2"
+                        onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user.fullName || 'User'}&background=0D8ABC&color=fff`; }}
                       />
                       <span className="text-gray-200">{user.fullName}</span>
                     </div>

@@ -17,16 +17,22 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 	return (
 		<>
 			<div
-				className={`flex gap-3 items-center rounded-lg p-3 my-2 cursor-pointer transition-all duration-200 hover:bg-gray-700
-				${isSelected ? "bg-blue-600/80 shadow-md" : "bg-gray-800/40"}
+				className={`flex gap-4 items-center rounded-2xl p-3 my-2 cursor-pointer transition-all duration-300 relative overflow-hidden
+				${isSelected ? "bg-gradient-to-r from-blue-600/60 to-cyan-500/60 shadow-[0_4px_16px_rgba(6,182,212,0.2)]" : "bg-transparent hover:bg-gray-800/50"}
 			`}
 				onClick={() => setSelectedConversation(conversation)}
 			>
+                {isSelected && <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-400 shadow-[0_0_8px_cyan]" />}
 				{conversation.isGroupChat ? (
 					<div className="avatar">
 						<div className="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-400">
 							{conversation.groupPic ? (
-								<img src={conversation.groupPic} alt="group avatar" className="object-cover" />
+								<img 
+									src={conversation.groupPic} 
+									alt="group avatar" 
+									className="object-cover" 
+									onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${conversation.groupName || 'Group'}&background=0D8ABC&color=fff`; }}
+								/>
 							) : (
 								<div className="w-full h-full bg-blue-800 flex items-center justify-center shadow-inner">
 									<FaUsers className="text-blue-100 text-xl" />
@@ -37,7 +43,12 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 				) : (
 					<div className={`avatar ${isOnline ? "online" : ""}`}>
 						<div className='w-12 h-12 rounded-full ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-400'>
-							<img src={conversation.profilePic} alt='user avatar' className="object-cover" />
+							<img 
+								src={conversation.profilePic || `https://ui-avatars.com/api/?name=${conversation.fullName || 'User'}&background=0D8ABC&color=fff`} 
+								alt='user avatar' 
+								className="object-cover" 
+								onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${conversation.fullName || 'User'}&background=0D8ABC&color=fff`; }}
+							/>
 						</div>
 					</div>
 				)}

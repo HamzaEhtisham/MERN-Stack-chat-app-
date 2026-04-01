@@ -4,6 +4,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import Message from "../models/message.model.js";
 
 // Get the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -52,6 +53,34 @@ io.on("connection", (socket) => {
   socket.on("leaveGroup", (groupId) => {
     socket.leave(groupId);
     console.log(`User ${userId} left group ${groupId}`);
+  });
+
+  // Typing indicators
+  socket.on("typing", ({ receiverId }) => {
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("typing", { senderId: userId });
+    }
+  });
+
+  socket.on("stopTyping", ({ receiverId }) => {
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("stopTyping", { senderId: userId });
+    }
+  });
+
+  // Mark message as read
+  socket.on("markAsRead", async ({ messageId, senderId }) => {
+    try {
+      await Message.findByIdAndUpdate(messageId, { status: "read" });
+      const senderSocketId = getReceiverSocketId(senderId);
+      if (senderSocketId) {
+        io.to(senderSocketId).emit("messageStatusUpdated", { messageId, status: "read" });
+      }
+    } catch (error) {
+      console.error("Error marking message as read:", error.message);
+    }
   });
 
   // socket.on() is used to listen to the events. can be used both on client and server side

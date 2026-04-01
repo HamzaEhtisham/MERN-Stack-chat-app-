@@ -21,8 +21,21 @@ const messageSchema = new mongoose.Schema(
 		},
 		message: {
 			type: String,
-			required: true,
+			default: "",
 		},
+		image: {
+			type: String,
+			default: "",
+		},
+		status: {
+			type: String,
+			enum: ["sent", "read"],
+			default: "sent",
+		},
+		readBy: [{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+		}],
 		// createdAt, updatedAt
 	},
 	{ timestamps: true }

@@ -26,8 +26,8 @@ NODE_ENV=...
 npm run build
 ```
 
-### Start the app
+### Start the app (Concurrent mode)
 
 ```shell
-npm start
+npm run dev
 ```

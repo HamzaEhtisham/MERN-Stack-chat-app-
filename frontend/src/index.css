@@ -1,90 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url("/bg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #e5e7eb;
+    background: linear-gradient(rgba(10, 15, 30, 0.75), rgba(15, 20, 35, 0.85)), url("/bg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    overflow: hidden;
+  }
 }
 
-/* Responsive layout classes */
-@layer components {
-  /* Sidebar */
-  .sidebar {
-    @apply fixed inset-0 md:static 
-      w-full md:w-[380px] h-full 
-      transition-transform duration-300 ease-in-out 
-      bg-gray-800/95 backdrop-blur-sm z-50 md:z-0;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(59, 130, 246, 0.5) rgba(17, 24, 39, 0.7);
-  }
-
-  .sidebar-closed {
-    @apply -translate-x-full md:translate-x-0;
-  }
-
-  /* Main container */
-  .chat-container {
-    @apply flex h-full w-full overflow-hidden;
-  }
-
-  /* Messages area */
-  .messages-container {
-    @apply flex-1 flex flex-col h-full w-full 
-      md:w-3/4 lg:w-4/5 bg-gray-900/80 backdrop-blur-sm;
-  }
-
-  .messages-list {
-    @apply flex-1 overflow-y-auto p-4 space-y-4;
-  }
-
-  /* Mobile bottom nav (optional) */
-  .mobile-nav {
-    @apply md:hidden fixed bottom-0 left-0 right-0 
-      bg-gray-800 border-t border-gray-700 z-50;
+@layer utilities {
+  .glass-panel {
+    @apply bg-gray-900/40 backdrop-blur-xl border border-gray-100/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] rounded-[2rem] overflow-hidden;
   }
   
-  /* Custom scrollbar for webkit browsers */
+  .glass-input {
+    @apply bg-gray-800/60 backdrop-blur-md border border-gray-600/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300 focus:bg-gray-800/80;
+  }
+
+  .premium-btn {
+    @apply bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-medium shadow-lg shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  /* Sleek Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
-  
   ::-webkit-scrollbar-track {
-    background: rgba(17, 24, 39, 0.7);
+    background: transparent;
   }
-  
   ::-webkit-scrollbar-thumb {
-    background: rgba(59, 130, 246, 0.5);
+    background: rgba(100, 116, 139, 0.3);
     border-radius: 10px;
   }
-}
-
-/* dark mode looking scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #555;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #121212;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #242424;
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.6);
+  }
 }
 
 /* SHAKE ANIMATION ON HORIZONTAL DIRECTION */
@@ -94,40 +59,32 @@ body {
   backface-visibility: hidden;
   perspective: 1000px;
 }
-
 @keyframes shake {
-  10%,
-  90% {
-    transform: translate3d(-1px, 0, 0);
-  }
-
-  20%,
-  80% {
-    transform: translate3d(2px, 0, 0);
-  }
-
-  30%,
-  50%,
-  70% {
-    transform: translate3d(-4px, 0, 0);
-  }
-
-  40%,
-  60% {
-    transform: translate3d(4px, 0, 0);
-  }
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
-/* Online status indicator */
+/* Online status indicator styling */
 .avatar.online:before {
   content: '';
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 25%;
-  height: 25%;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background-color: #10b981;
   border: 2px solid #1f2937;
   z-index: 10;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
 }
+
+/* Typing dot animation */
+.typing-dot {
+  @apply bg-current w-1 h-1 rounded-full inline-block mx-0.5;
+}
+.delay-75 { animation-delay: 75ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-300 { animation-delay: 300ms; }

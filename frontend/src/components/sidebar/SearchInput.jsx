@@ -34,13 +34,13 @@ const SearchInput = () => {
         <input
           type="text"
           placeholder="Search..."
-          className="w-full py-2 pl-4 pr-10 rounded-full bg-gray-800 text-gray-300 border border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full glass-input py-2.5 pl-5 pr-12 rounded-full font-medium"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-500 transition-colors"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-blue-500/20 hover:bg-blue-500/40 rounded-full text-cyan-400 hover:text-cyan-300 transition-all"
         >
           <IoSearchSharp className="w-5 h-5" />
         </button>

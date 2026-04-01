@@ -9,7 +9,7 @@ const Sidebar = () => {
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
 
   return (
-    <div className="border-r border-gray-700/70 p-4 flex flex-col h-full max-w-[100vw] w-full md:w-[380px] bg-gray-900/95">
+    <div className="border-r border-gray-100/10 p-4 flex flex-col h-full max-w-[100vw] w-full md:w-[380px] bg-transparent">
       <div className="flex flex-col gap-4 h-full">
         <div className="flex items-center justify-between gap-2 mb-4">
           <div className="relative w-full">
@@ -17,7 +17,7 @@ const Sidebar = () => {
           </div>
           <button 
             onClick={() => setIsCreateGroupModalOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex-shrink-0 shadow-md"
+            className="premium-btn px-4 py-2 rounded-xl text-sm transition-colors duration-200 flex-shrink-0"
           >
             Create Group
           </button>

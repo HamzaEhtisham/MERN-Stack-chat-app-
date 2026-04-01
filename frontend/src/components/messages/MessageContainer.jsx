@@ -63,13 +63,18 @@ const MessageContainer = () => {
 			) : (
 				<>
 					{/* Header */}
-					<div className='bg-gray-800/90 px-6 py-4 mb-2 shadow-md border-b border-gray-700/50'>
+					<div className='bg-gray-900/40 backdrop-blur-md px-6 py-4 mb-2 shadow-sm border-b border-gray-100/10 z-10'>
 						{selectedConversation.isGroupChat ? (
 							<div className="flex items-center justify-between w-full">
 								<div className="flex items-center gap-3">
 									<div className="w-10 h-10 rounded-full ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-800">
 										{selectedConversation.groupPic ? (
-											<img src={selectedConversation.groupPic} alt="group avatar" className="w-full h-full rounded-full object-cover" />
+											<img 
+												src={selectedConversation.groupPic} 
+												alt="group avatar" 
+												className="w-full h-full rounded-full object-cover" 
+												onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${selectedConversation.groupName || 'Group'}&background=0D8ABC&color=fff`; }}
+											/>
 										) : (
 											<div className="w-full h-full rounded-full bg-blue-800 flex items-center justify-center shadow-inner">
 												<FaUsers className="text-blue-100 text-xl" />
@@ -104,7 +109,11 @@ const MessageContainer = () => {
 							<div className="flex items-center gap-3">
 								<div className="avatar">
 									<div className="w-10 h-10 rounded-full ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-800">
-										<img src={selectedConversation.profilePic} alt="user avatar" />
+										<img 
+											src={selectedConversation.profilePic || `https://ui-avatars.com/api/?name=${selectedConversation.fullName || 'User'}&background=0D8ABC&color=fff`} 
+											alt="user avatar" 
+											onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${selectedConversation.fullName || 'User'}&background=0D8ABC&color=fff`; }}
+										/>
 									</div>
 								</div>
 								<div>
@@ -146,14 +155,14 @@ export default MessageContainer;
 const NoChatSelected = () => {
 	const { authUser } = useAuthContext();
 	return (
-		<div className='flex items-center justify-center w-full h-full bg-gray-900/50 backdrop-blur-sm'>
-			<div className='px-8 py-10 text-center rounded-xl bg-gray-800/70 shadow-xl border border-gray-700/50 backdrop-blur-sm'>
+		<div className='flex items-center justify-center w-full h-full'>
+			<div className='px-8 py-10 text-center rounded-3xl glass-panel max-w-sm w-full mx-4'>
 				<div className='flex flex-col items-center gap-4'>
-					<div className='w-20 h-20 rounded-full bg-blue-600/30 flex items-center justify-center mb-2'>
-						<TiMessages className='text-4xl text-blue-300' />
+					<div className='w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600/30 to-cyan-500/30 flex items-center justify-center mb-2 shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-md border border-cyan-500/20'>
+						<TiMessages className='text-4xl text-cyan-400' />
 					</div>
-					<h2 className='text-2xl font-bold text-gray-100'>Welcome, {authUser.fullName}! 👋</h2>
-					<p className='text-gray-300'>Select a chat to start messaging</p>
+					<h2 className='text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300'>Welcome, {authUser.fullName}! 👋</h2>
+					<p className='text-gray-400 font-medium'>Select a chat to start messaging</p>
 				</div>
 			</div>
 		</div>

@@ -4,6 +4,7 @@
 	"description": "![Demo App](https://i.ibb.co/fXmZdnz/Screenshot-10.png)",
 	"main": "server.js",
 	"scripts": {
+		"dev": "concurrently \"npm run server\" \"npm run dev --prefix frontend\"",
 		"server": "nodemon backend/server.js",
 		"start": "node backend/server.js",
 		"build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
@@ -25,6 +26,7 @@
 		"socket.io": "^4.8.1"
 	},
 	"devDependencies": {
+		"concurrently": "^9.2.1",
 		"nodemon": "^3.0.3"
 	},
 	"repository": {

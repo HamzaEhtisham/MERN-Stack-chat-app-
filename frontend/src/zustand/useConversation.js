@@ -5,6 +5,8 @@ const useConversation = create((set) => ({
 	setSelectedConversation: (selectedConversation) => set({ selectedConversation }),
 	messages: [],
 	setMessages: (messages) => set({ messages }),
+	isTyping: false,
+	setIsTyping: (isTyping) => set({ isTyping }),
 }));
 
 export default useConversation;

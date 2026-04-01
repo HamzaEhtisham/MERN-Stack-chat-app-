@@ -60,9 +60,10 @@ const GroupProfileModal = ({ isOpen, onClose, group }) => {
           <div className="mb-4 flex flex-col items-center">
             <div className="relative mb-3">
               <img
-                src={imgUrl || group?.groupPic || "/uploads/default-group.png"}
+                src={imgUrl || group?.groupPic || `https://ui-avatars.com/api/?name=${group?.groupName || 'Group'}&background=0D8ABC&color=fff`}
                 alt="Group"
-                className="w-24 h-24 rounded-full object-cover border-2 border-blue-500"
+                className="w-24 h-24 rounded-full object-cover border-2 border-blue-500 shadow-lg"
+                onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${group?.groupName || 'Group'}&background=0D8ABC&color=fff`; }}
               />
               <label className="absolute bottom-0 right-0 bg-blue-500 p-1 rounded-full cursor-pointer">
                 <FaCamera className="text-white" />

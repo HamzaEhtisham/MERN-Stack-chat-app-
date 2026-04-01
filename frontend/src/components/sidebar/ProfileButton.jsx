@@ -68,9 +68,10 @@ const ProfileButton = () => {
                 </div>
               ) : (
                 <img
-                  src={authUser?.profilePic || "https://via.placeholder.com/40"}
+                  src={authUser?.profilePic || `https://ui-avatars.com/api/?name=${authUser?.username || 'User'}&background=0D8ABC&color=fff`}
                   alt="profile"
                   className="object-cover"
+                  onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${authUser?.username || 'User'}&background=0D8ABC&color=fff`; }}
                 />
               )}
             </div>

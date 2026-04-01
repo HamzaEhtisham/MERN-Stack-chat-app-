@@ -1,9 +1,11 @@
 import useConversation from "../../zustand/useConversation";
 import MessageContainer from "../../components/messages/MessageContainer";
 import Sidebar from "../../components/sidebar/Sidebar";
+import useGlobalSocketListeners from "../../hooks/useGlobalSocketListeners";
 
 const Home = () => {
   const { selectedConversation, setSelectedConversation } = useConversation();
+  useGlobalSocketListeners();
 
   return (
     <div className="flex h-full w-full overflow-hidden bg-transparent animate-fade-in relative">

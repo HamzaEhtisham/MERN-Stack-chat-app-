@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useSocketContext } from "../context/SocketContext";
 import { saveConversations, getCachedConversations } from "../utils/idb";
+import useConversation from "../zustand/useConversation";
 
 const useGetConversations = () => {
 	const [loading, setLoading] = useState(false);
-	const [conversations, setConversations] = useState([]);
-	const [groupChats, setGroupChats] = useState([]);
 	const { socket } = useSocketContext();
+	const { setConversations, setGroupChats, conversations, groupChats } = useConversation();
 
 	const getConversations = async () => {
 		setLoading(true);
@@ -64,7 +64,6 @@ const useGetConversations = () => {
 
 			} catch (error) {
 				console.error("[Frontend] Error fetching conversations:", error.message);
-				// Don't show toast if it's just a connection error—cache is already showing
 				if (navigator.onLine && error.message.indexOf("Unexpected end") === -1) {
 					toast.error("Failed to refresh conversations");
 				}
@@ -86,20 +85,18 @@ const useGetConversations = () => {
 		
 		socket.on("groupUpdated", async (updatedGroup) => {
 			const groupWithFlag = { ...updatedGroup, isGroupChat: true };
-			setGroupChats(prevGroups => {
-				const updatedGroups = prevGroups.map(group => 
+			setGroupChats(
+				useConversation.getState().groupChats.map(group => 
 					group._id === updatedGroup._id ? updatedGroup : group
-				);
-				return updatedGroups;
-			});
-			// Update cache
+				)
+			);
 			await saveConversations([groupWithFlag]);
 		});
 		
 		return () => {
 			socket.off("groupUpdated");
 		};
-	}, [socket]);
+	}, [socket, setGroupChats]);
 
 	return { loading, conversations, groupChats };
 };

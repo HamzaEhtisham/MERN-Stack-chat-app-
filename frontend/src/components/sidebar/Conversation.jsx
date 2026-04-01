@@ -3,18 +3,27 @@ import useConversation from "../../zustand/useConversation";
 import { FaUsers } from "react-icons/fa";
 
 const Conversation = ({ conversation, lastIdx, emoji }) => {
-	const { selectedConversation, setSelectedConversation } = useConversation();
+	const { selectedConversation, setSelectedConversation, typingUsers, lastMessages, unreadCounts, clearUnread } = useConversation();
 
 	const isSelected = selectedConversation?._id === conversation._id;
 	const { onlineUsers } = useSocketContext();
 	const isOnline = !conversation.isGroupChat && onlineUsers.includes(conversation._id);
+	
+	const isSomeoneTyping = typingUsers[conversation._id];
+	const unreadCount = unreadCounts[conversation._id] || 0;
+	const lastMessageText = lastMessages[conversation._id];
+
+	const handleSelectConversation = () => {
+		setSelectedConversation(conversation);
+		clearUnread(conversation._id);
+	};
 
 	return (
 		<div
 			className={`group flex items-center rounded-2xl p-2 md:p-3 my-1 mx-1 md:mx-2 cursor-pointer transition-all duration-300 relative overflow-hidden
 			${isSelected ? "bg-cyan-500/10 border border-cyan-500/20 shadow-sm" : "hover:bg-white/5 border border-transparent"}
 		`}
-			onClick={() => setSelectedConversation(conversation)}
+			onClick={handleSelectConversation}
 		>
 			{isSelected && <div className="absolute left-0 top-2 bottom-2 w-1.5 bg-cyan-500 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.6)]" />}
 			
@@ -58,15 +67,32 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 					<p className={`text-base xl:text-lg font-bold truncate tracking-wide ${isSelected ? "text-cyan-400" : "text-slate-100"}`}>
 						{conversation.isGroupChat ? conversation.groupName : conversation.fullName}
 					</p>
-					{isOnline && !conversation.isGroupChat && (
-						<span className="text-[10px] xl:text-xs font-bold text-green-500 uppercase tracking-wider">
-							Online
-						</span>
-					)}
+					<div className="flex items-center gap-2">
+                        {unreadCount > 0 && (
+                            <span className="bg-cyan-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-[0_0_8px_rgba(6,182,212,0.6)]">
+                                {unreadCount}
+                            </span>
+                        )}
+                        {isOnline && !conversation.isGroupChat && (
+                            <span className="text-[10px] xl:text-xs font-bold text-green-500 uppercase tracking-wider">
+                                Online
+                            </span>
+                        )}
+                    </div>
 				</div>
 				<div className="flex items-center justify-between gap-2 overflow-hidden">
 					<p className={`text-[13px] xl:text-sm truncate font-medium ${isSelected ? "text-cyan-400/80" : "text-slate-400"}`}>
-						{conversation.isGroupChat ? `${conversation.participants?.length || 0} participants` : `@${conversation.username || "user"}`}
+						{isSomeoneTyping ? (
+                            <span className="text-green-400 font-bold italic flex items-center gap-1">
+                                Typing <span className="flex gap-0.5"><span className="animate-bounce delay-75">.</span><span className="animate-bounce delay-150">.</span><span className="animate-bounce delay-300">.</span></span>
+                            </span>
+                        ) : lastMessageText ? (
+                            <span className={unreadCount > 0 ? "text-white font-bold" : ""}>
+                                {lastMessageText}
+                            </span>
+                        ) : (
+						    conversation.isGroupChat ? `${conversation.participants?.length || 0} participants` : `@${conversation.username || "user"}`
+                        )}
 					</p>
 				</div>
 			</div>

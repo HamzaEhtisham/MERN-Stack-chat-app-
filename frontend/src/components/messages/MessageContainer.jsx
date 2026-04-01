@@ -4,12 +4,11 @@ import MessageInput from "./MessageInput";
 import Messages from "./Messages";
 import { TiMessages } from "react-icons/ti";
 import { FaUsers, FaUsersCog, FaEdit } from "react-icons/fa";
-import { BsCircleFill } from "react-icons/bs";
+import { HiChevronLeft } from "react-icons/hi";
 import { useAuthContext } from "../../context/AuthContext";
 import { useSocketContext } from "../../context/SocketContext";
 import GroupProfileModal from "../group/GroupProfileModal";
 import GroupMembersModal from "../group/GroupMembersModal";
-import toast from "react-hot-toast";
 
 const MessageContainer = () => {
 	const { selectedConversation, setSelectedConversation } = useConversation();
@@ -23,127 +22,101 @@ const MessageContainer = () => {
 		selectedConversation?.groupAdmin?._id === authUser?._id;
 
 	useEffect(() => {
-		// Join group chat room when selected conversation changes
 		if (selectedConversation?.isGroupChat) {
 			socket.emit("joinGroup", selectedConversation._id);
 		}
-
-		// cleanup function (unmounts)
 		return () => {
 			if (selectedConversation?.isGroupChat) {
 				socket.emit("leaveGroup", selectedConversation._id);
 			}
-			// Don't reset selectedConversation on unmount to preserve selection
 		};
-	}, [selectedConversation, socket, setSelectedConversation]);
-	
-	// Listen for group updates
-	useEffect(() => {
-		if (!socket) return;
-		
-		socket.on("groupUpdated", (updatedGroup) => {
-			console.log("Group updated:", updatedGroup);
-			
-			// Update the selected conversation if it's the same group
-			if (selectedConversation?._id === updatedGroup._id) {
-				setSelectedConversation(updatedGroup);
-				toast.success("Group information updated");
-			}
-		});
-		
-		return () => {
-			socket.off("groupUpdated");
-		};
-	}, [socket, selectedConversation, setSelectedConversation]);
+	}, [selectedConversation, socket]);
 
 	return (
-		<div className='md:min-w-[450px] flex flex-col h-full'>
+		<div className='flex flex-col h-full w-full bg-transparent overflow-hidden'>
 			{!selectedConversation ? (
 				<NoChatSelected />
 			) : (
 				<>
 					{/* Header */}
-					<div className='bg-gray-900/40 backdrop-blur-md px-6 py-4 mb-2 shadow-sm border-b border-gray-100/10 z-10'>
-						{selectedConversation.isGroupChat ? (
-							<div className="flex items-center justify-between w-full">
-								<div className="flex items-center gap-3">
-									<div className="w-10 h-10 rounded-full ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-800">
-										{selectedConversation.groupPic ? (
-											<img 
-												src={selectedConversation.groupPic} 
-												alt="group avatar" 
-												className="w-full h-full rounded-full object-cover" 
-												onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${selectedConversation.groupName || 'Group'}&background=0D8ABC&color=fff`; }}
-											/>
-										) : (
-											<div className="w-full h-full rounded-full bg-blue-800 flex items-center justify-center shadow-inner">
-												<FaUsers className="text-blue-100 text-xl" />
-											</div>
-										)}
-									</div>
-									<div>
-										<span className='text-gray-100 font-bold text-lg'>{selectedConversation.groupName}</span>
-										<p className="text-blue-300 text-xs font-medium">{selectedConversation.participants?.length || 0} members</p>
-									</div>
-								</div>
-								<div className="flex items-center gap-2">
-									{isGroupAdmin && (
-										<button 
-											onClick={() => setShowGroupProfileModal(true)}
-											className="p-2 text-blue-300 hover:text-blue-400 hover:bg-gray-700 rounded-full transition-colors"
-											title="Edit Group Profile"
-										>
-											<FaEdit />
-										</button>
-									)}
-									<button 
-										onClick={() => setShowGroupMembersModal(true)}
-										className="p-2 text-blue-300 hover:text-blue-400 hover:bg-gray-700 rounded-full transition-colors"
-										title="Manage Group Members"
-									>
-										<FaUsersCog />
-									</button>
-								</div>
-							</div>
-						) : (
-							<div className="flex items-center gap-3">
-								<div className="avatar">
-									<div className="w-10 h-10 rounded-full ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-800">
-										<img 
-											src={selectedConversation.profilePic || `https://ui-avatars.com/api/?name=${selectedConversation.fullName || 'User'}&background=0D8ABC&color=fff`} 
-											alt="user avatar" 
-											onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${selectedConversation.fullName || 'User'}&background=0D8ABC&color=fff`; }}
-										/>
-									</div>
-								</div>
-								<div>
-									<span className='text-gray-100 font-bold text-lg'>{selectedConversation.fullName}</span>
-									<div className="flex items-center gap-1">
-										<BsCircleFill className={`${onlineUsers?.includes(selectedConversation._id) ? "text-green-500" : "text-gray-500"} text-[8px]`} />
-										<span className="text-xs text-gray-300">{onlineUsers?.includes(selectedConversation._id) ? "Online" : "Offline"}</span>
-									</div>
-								</div>
-							</div>
-						)}
+					<div className='chatverse-glass px-6 py-4 flex items-center justify-between z-10 border-b border-white/5'>
+						<div className="flex items-center gap-4">
+              <button 
+                onClick={() => setSelectedConversation(null)}
+                className="md:hidden p-2 -ml-2 rounded-xl hover:bg-white/5 text-slate-400"
+              >
+                <HiChevronLeft size={24} />
+              </button>
+							{selectedConversation.isGroupChat ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center shadow-lg">
+                    {selectedConversation.groupPic ? (
+                      <img 
+                        src={selectedConversation.groupPic} 
+                        className="w-full h-full rounded-xl object-cover" 
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = `https://ui-avatars.com/api/?name=${selectedConversation.groupName}&background=4f46e5&color=fff`;
+                        }}
+                      />
+                    ) : (
+                      <FaUsers className="text-white text-xl" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className='text-white font-bold tracking-wide'>{selectedConversation.groupName}</h3>
+                    <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest">{selectedConversation.participants?.length || 0} Members</p>
+                  </div>
+                </div>
+							) : (
+                <div className="flex items-center gap-3">
+                  <div className={`avatar ${onlineUsers?.includes(selectedConversation._id) ? "online" : ""}`}>
+                    <div className="w-10 h-10 rounded-xl">
+                      <img 
+                        src={selectedConversation.profilePic || `https://ui-avatars.com/api/?name=${selectedConversation.fullName}&background=06b6d4&color=fff`} 
+                        alt="user avatar" 
+                        className="w-full h-full object-cover rounded-xl"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = `https://ui-avatars.com/api/?name=${selectedConversation.fullName}&background=06b6d4&color=fff`;
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className='text-white font-bold tracking-wide'>{selectedConversation.fullName}</h3>
+                    <p className={`text-[10px] font-bold uppercase tracking-widest ${onlineUsers?.includes(selectedConversation._id) ? "text-green-400" : "text-slate-500"}`}>
+                      {onlineUsers?.includes(selectedConversation._id) ? "Online Now" : "Offline"}
+                    </p>
+                  </div>
+                </div>
+							)}
+						</div>
+
+            <div className="flex items-center gap-2">
+              {selectedConversation.isGroupChat && (
+                <>
+                  {isGroupAdmin && (
+                    <button onClick={() => setShowGroupProfileModal(true)} className="p-2.5 rounded-xl hover:bg-white/5 text-slate-400 transition-colors">
+                      <FaEdit size={18} />
+                    </button>
+                  )}
+                  <button onClick={() => setShowGroupMembersModal(true)} className="p-2.5 rounded-xl hover:bg-white/5 text-slate-400 transition-colors">
+                    <FaUsersCog size={18} />
+                  </button>
+                </>
+              )}
+            </div>
 					</div>
+
 					<Messages />
 					<MessageInput />
 					
-					{/* Group Modals */}
 					{showGroupProfileModal && (
-						<GroupProfileModal 
-							isOpen={showGroupProfileModal} 
-							onClose={() => setShowGroupProfileModal(false)} 
-							group={selectedConversation} 
-						/>
+						<GroupProfileModal isOpen={showGroupProfileModal} onClose={() => setShowGroupProfileModal(false)} group={selectedConversation} />
 					)}
-					
 					{showGroupMembersModal && (
-						<GroupMembersModal 
-							isOpen={showGroupMembersModal} 
-							onClose={() => setShowGroupMembersModal(false)} 
-							group={selectedConversation} 
-						/>
+						<GroupMembersModal isOpen={showGroupMembersModal} onClose={() => setShowGroupMembersModal(false)} group={selectedConversation} />
 					)}
 				</>
 			)}
@@ -155,19 +128,40 @@ export default MessageContainer;
 const NoChatSelected = () => {
 	const { authUser } = useAuthContext();
 	return (
-		<div className='flex items-center justify-center w-full h-full'>
-			<div className='px-8 py-10 text-center rounded-3xl glass-panel max-w-sm w-full mx-4'>
-				<div className='flex flex-col items-center gap-4'>
-					<div className='w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600/30 to-cyan-500/30 flex items-center justify-center mb-2 shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-md border border-cyan-500/20'>
-						<TiMessages className='text-4xl text-cyan-400' />
-					</div>
-					<h2 className='text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300'>Welcome, {authUser.fullName}! 👋</h2>
-					<p className='text-gray-400 font-medium'>Select a chat to start messaging</p>
-				</div>
+		<div className='flex items-center justify-center w-full h-full p-8 animate-fade-in'>
+			<div className='max-w-md w-full text-center space-y-10 premium-card p-12 bg-slate-900/40 backdrop-blur-3xl shadow-2xl'>
+				<div className="relative inline-block">
+          <div className="w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-cyan-400 via-blue-600 to-violet-600 flex items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.3)] mx-auto transform hover:rotate-12 transition-all duration-700">
+            <img src="/logo.png" alt="ChatVerse" className="w-14 h-14 object-contain" />
+          </div>
+          <div className="absolute -bottom-2 -right-2 bg-slate-950 rounded-2xl p-2.5 border border-white/10 shadow-xl">
+            <TiMessages className='text-3xl text-cyan-400' />
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          <h1 className='text-5xl font-extrabold tracking-tighter'>
+            <span className='chatverse-gradient-text'>ChatVerse</span>
+          </h1>
+          <div className="space-y-2">
+            <p className='text-xl text-white font-semibold'>Welcome, {authUser.fullName.split(' ')[0]}! 👋</p>
+            <p className='text-slate-400 font-medium leading-relaxed'>
+              Your professional universe for secure and instant messaging.
+              Select a conversation to start exploring.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-3 pt-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className={`w-2 h-2 rounded-full bg-cyan-500/40 animate-bounce delay-${i * 150}`}></div>
+          ))}
+        </div>
 			</div>
 		</div>
 	);
 };
+
 
 // STARTER CODE SNIPPET
 // import MessageInput from "./MessageInput";

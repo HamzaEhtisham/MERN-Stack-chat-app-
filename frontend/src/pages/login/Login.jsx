@@ -14,54 +14,64 @@ const Login = () => {
 	};
 
 	return (
-		<div className='flex flex-col items-center justify-center min-w-96 mx-auto'>
-			<div className='w-full p-8 glass-panel'>
-				<h1 className='text-4xl font-bold text-center text-white mb-6'>
-					Login
-					<span className='text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300'> ChatApp</span>
-				</h1>
+		<div className='flex items-center justify-center min-h-screen w-full p-4 animate-fade-in'>
+			<div className='w-full max-w-md p-10 premium-card space-y-8'>
+				<div className="text-center space-y-4">
+          <div className="inline-flex w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 items-center justify-center shadow-xl shadow-cyan-500/20 mb-2">
+            <img src="/logo.png" alt="ChatVerse" className="w-10 h-10 object-contain" />
+          </div>
+					<h1 className='text-5xl font-extrabold tracking-tight'>
+						<span className='chatverse-gradient-text'>ChatVerse</span>
+					</h1>
+          <p className="text-slate-400 font-medium">Welcome back! Please login to your account.</p>
+				</div>
 
-				<form onSubmit={handleSubmit}>
-					<div className="mb-4">
-						<label className='block text-sm font-medium text-gray-300 mb-1'>
+				<form onSubmit={handleSubmit} className="space-y-6">
+					<div>
+						<label className='block text-xs font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2'>
 							Username
 						</label>
 						<input
 							type='text'
-							placeholder='Enter username'
-							className='w-full glass-input p-3 rounded-xl'
+							placeholder='Enter your username'
+							className='w-full premium-input p-4'
 							value={username}
 							onChange={(e) => setUsername(e.target.value)}
 						/>
 					</div>
 
-					<div className="mb-4">
-						<label className='block text-sm font-medium text-gray-300 mb-1'>
+					<div>
+						<label className='block text-xs font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2'>
 							Password
 						</label>
 						<input
 							type='password'
-							placeholder='Enter Password'
-							className='w-full glass-input p-3 rounded-xl'
+							placeholder='••••••••'
+							className='w-full premium-input p-4'
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 						/>
 					</div>
-					<Link to='/signup' className='text-sm text-gray-400 hover:text-cyan-400 transition-colors inline-block mt-2 font-medium'>
-						{"Don't"} have an account?
-					</Link>
+					
+					<div className="flex justify-end">
+            <Link to='/signup' className='text-sm text-cyan-400 hover:text-cyan-300 transition-colors font-semibold'>
+              Create an account?
+            </Link>
+          </div>
 
-					<div className="mt-6">
-						<button className='w-full premium-btn py-3 rounded-xl flex items-center justify-center font-bold text-lg' disabled={loading}>
-							{loading ? <span className='loading loading-spinner text-white'></span> : "Login"}
-						</button>
-					</div>
+					<button 
+            className='w-full premium-btn-v2 py-4 flex items-center justify-center font-bold text-lg' 
+            disabled={loading}
+          >
+						{loading ? <span className='loading loading-spinner text-white'></span> : "Sign In"}
+					</button>
 				</form>
 			</div>
 		</div>
 	);
 };
 export default Login;
+
 
 // STARTER CODE FOR THIS FILE
 // const Login = () => {

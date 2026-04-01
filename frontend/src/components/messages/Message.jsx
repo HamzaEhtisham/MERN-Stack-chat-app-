@@ -1,7 +1,7 @@
 import { useAuthContext } from "../../context/AuthContext";
 import { extractTime } from "../../utils/extractTime";
 import useConversation from "../../zustand/useConversation";
-import { BsCheck2, BsCheck2All } from "react-icons/bs";
+import { BsCheck2, BsCheck2All, BsClock } from "react-icons/bs";
 
 const Message = ({ message }) => {
 	const { authUser } = useAuthContext();
@@ -48,13 +48,13 @@ const Message = ({ message }) => {
 			<div className='chat-footer opacity-50 text-xs flex gap-1 items-center'>
 				{formattedTime}
 				{fromMe && !isGroupChat && (
-					<span className={message.status === "read" ? "text-blue-400" : "text-gray-400"}>
-						{message.status === "read" ? <BsCheck2All size={16} /> : <BsCheck2 size={16} />}
+					<span className={message.status === "read" ? "text-blue-400" : message.status === "pending" ? "text-yellow-400" : "text-gray-400"}>
+						{message.status === "pending" ? <BsClock size={12} /> : message.status === "read" ? <BsCheck2All size={16} /> : <BsCheck2 size={16} />}
 					</span>
 				)}
 				{fromMe && isGroupChat && (
-					<span className={allRead ? "text-blue-400" : readByCount > 0 ? "text-gray-300" : "text-gray-500"}>
-						{allRead ? <BsCheck2All size={16} /> : readByCount > 0 ? <BsCheck2All size={16} /> : <BsCheck2 size={16} />}
+					<span className={message.status === "pending" ? "text-yellow-400" : allRead ? "text-blue-400" : readByCount > 0 ? "text-gray-300" : "text-gray-500"}>
+						{message.status === "pending" ? <BsClock size={12} /> : allRead ? <BsCheck2All size={16} /> : readByCount > 0 ? <BsCheck2All size={16} /> : <BsCheck2 size={16} />}
 					</span>
 				)}
 			</div>

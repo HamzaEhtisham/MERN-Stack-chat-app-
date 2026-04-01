@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { clearAllData } from "../utils/idb";
 
 const useLogout = () => {
 	const [loading, setLoading] = useState(false);
@@ -21,6 +22,7 @@ const useLogout = () => {
 				throw new Error(data.error);
 			}
 
+			await clearAllData(); // Wipe offline cache on logout
 			localStorage.removeItem("chat-user");
 			setAuthUser(null);
 			navigate("/login");
@@ -33,11 +35,9 @@ const useLogout = () => {
 
 	// Function to force clear JWT cookie and localStorage
 	const forceLogout = () => {
-		// Clear localStorage
+		clearAllData(); // Wipe offline cache
 		localStorage.removeItem("chat-user");
 		setAuthUser(null);
-		
-		// Redirect to login page
 		navigate("/login");
 		toast.success("Please login again to refresh your session");
 	};

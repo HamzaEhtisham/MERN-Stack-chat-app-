@@ -27,7 +27,7 @@ const useSendMessage = () => {
     };
 
     // Show immediately in UI
-    setMessages([...messages, optimisticMessage]);
+    setMessages((prev) => [...prev, optimisticMessage]);
 
     if (!navigator.onLine) {
       // Queue in IndexedDB for later sync
@@ -60,22 +60,33 @@ const useSendMessage = () => {
       }
 
       const res = await fetch(endpoint, options);
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      
+      // Robust error handling — if server returns 500 or non-JSON, catch it
+      if (!res.ok) {
+        throw new Error(`Server returned ${res.status}: ${res.statusText}`);
+      }
 
-      // Replace optimistic message with real server response
-      setMessages(prev => prev.map(m => m._id === tempId ? data : m));
-      // Cache the real message
-      await saveMessages(selectedConversation._id, [data]);
+      const data = await res.json();
+      if (data && data.error) throw new Error(data.error);
+
+      // Verify data is a valid message object before updating state
+      if (data && data._id) {
+        setMessages((prev) => prev.map((m) => (m._id === tempId ? data : m)));
+        // Cache the real message
+        await saveMessages(selectedConversation._id, [data]);
+      } else {
+        throw new Error("Invalid response from server");
+      }
     } catch (error) {
       // If send fails while online, keep as pending for retry
+      console.error("Message send failed:", error);
       await savePendingMessage({
         ...optimisticMessage,
         tempId,
         isGroupChat: selectedConversation.isGroupChat || false,
         imageFile: imageFile || null,
       });
-      toast.error(`Failed to send: ${error.message}. Will retry when online.`);
+      toast.error(`Send failed: ${error.message}.`);
     } finally {
       setLoading(false);
     }

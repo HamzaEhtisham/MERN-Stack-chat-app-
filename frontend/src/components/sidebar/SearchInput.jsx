@@ -33,21 +33,19 @@ const SearchInput = () => {
       <div className="relative flex-1">
         <input
           type="text"
-          placeholder="Search..."
-          className="w-full premium-input h-11 pl-4 pr-10 text-sm border-white/5 bg-white/5 hover:bg-white/10"
+          placeholder="Search messages or users..."
+          className="w-full premium-input h-10 md:h-11 xl:h-12 pl-4 pr-10 text-[13px] md:text-sm xl:text-base border-white/5 bg-white/5 hover:bg-white/10 text-white placeholder-slate-400 focus:bg-white/10 transition-all rounded-xl md:rounded-2xl"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <button
           type="submit"
-          className="absolute right-0 top-0 h-11 w-10 flex items-center justify-center text-slate-500 hover:text-cyan-400 transition-colors"
+          className="absolute right-0 top-0 h-10 md:h-11 xl:h-12 w-10 md:w-12 flex items-center justify-center text-slate-500 hover:text-cyan-400 transition-colors"
         >
-          <IoSearchSharp size={18} />
+          <IoSearchSharp size={18} className="md:w-5 md:h-5" />
         </button>
       </div>
     </form>
-
-
   );
 };
 export default SearchInput;

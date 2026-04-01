@@ -8,18 +8,18 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 	const isSelected = selectedConversation?._id === conversation._id;
 	const { onlineUsers } = useSocketContext();
 	const isOnline = !conversation.isGroupChat && onlineUsers.includes(conversation._id);
-	
+
 	return (
 		<div
-			className={`group flex gap-3 items-center rounded-xl p-2.5 my-0.5 cursor-pointer transition-all duration-300 relative overflow-hidden
+			className={`group flex items-center rounded-2xl p-2 md:p-3 my-1 mx-1 md:mx-2 cursor-pointer transition-all duration-300 relative overflow-hidden
 			${isSelected ? "bg-cyan-500/10 border border-cyan-500/20 shadow-sm" : "hover:bg-white/5 border border-transparent"}
 		`}
 			onClick={() => setSelectedConversation(conversation)}
 		>
-			{isSelected && <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-cyan-500 rounded-full shadow-[0_0_8px_rgba(6,182,212,0.5)]" />}
+			{isSelected && <div className="absolute left-0 top-2 bottom-2 w-1.5 bg-cyan-500 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.6)]" />}
 			
-			<div className={`avatar ${isOnline ? "online" : ""}`}>
-				<div className="w-10 h-10 rounded-xl overflow-hidden ring-1 ring-white/5 group-hover:ring-cyan-500/20 transition-all duration-500">
+			<div className="relative flex-shrink-0">
+				<div className="w-[48px] h-[48px] md:w-12 md:h-12 xl:w-14 xl:h-14 rounded-[1.25rem] xl:rounded-3xl overflow-hidden ring-1 ring-white/10 group-hover:ring-cyan-500/30 transition-all duration-500 shadow-md">
 					{conversation.isGroupChat ? (
 						conversation.groupPic ? (
 							<img 
@@ -33,7 +33,7 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 							/>
 						) : (
 							<div className="w-full h-full bg-gradient-to-br from-indigo-600 to-blue-700 flex items-center justify-center">
-								<FaUsers className="text-white text-lg" />
+								<FaUsers className="text-white text-xl xl:text-2xl" />
 							</div>
 						)
 					) : (
@@ -48,24 +48,29 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 						/>
 					)}
 				</div>
+				{isOnline && !conversation.isGroupChat && (
+					<div className="absolute -bottom-0.5 -right-0.5 w-[14px] h-[14px] xl:w-4 xl:h-4 bg-green-500 rounded-full border-[2.5px] border-slate-900 shadow-[0_0_8px_rgba(34,197,94,0.6)] z-10" />
+				)}
 			</div>
 
-			<div className='flex flex-col flex-1 min-w-0'>
-				<div className='flex justify-between items-center gap-2'>
-					<p className={`text-sm font-bold truncate tracking-wide ${isSelected ? "text-cyan-400" : "text-slate-200"}`}>
+			<div className='flex flex-col flex-1 min-w-0 ml-3.5 xl:ml-4'>
+				<div className='flex justify-between items-center mb-0.5'>
+					<p className={`text-base xl:text-lg font-bold truncate tracking-wide ${isSelected ? "text-cyan-400" : "text-slate-100"}`}>
 						{conversation.isGroupChat ? conversation.groupName : conversation.fullName}
 					</p>
-					{!conversation.isGroupChat && isOnline && <span className='w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.5)]'></span>}
+					{isOnline && !conversation.isGroupChat && (
+						<span className="text-[10px] xl:text-xs font-bold text-green-500 uppercase tracking-wider">
+							Online
+						</span>
+					)}
 				</div>
-				<div className="flex items-center gap-1.5">
-          {conversation.isGroupChat && <span className="text-[8px] bg-indigo-500/20 text-indigo-400 px-1.5 py-0.5 rounded uppercase font-bold tracking-tighter">Group</span>}
-          <p className={`text-[10px] truncate font-medium ${isSelected ? "text-cyan-400/60" : "text-slate-500"}`}>
-            {conversation.isGroupChat ? `${conversation.participants?.length || 0} Members` : (isOnline ? "Active" : "Offline")}
-          </p>
-        </div>
+				<div className="flex items-center justify-between gap-2 overflow-hidden">
+					<p className={`text-[13px] xl:text-sm truncate font-medium ${isSelected ? "text-cyan-400/80" : "text-slate-400"}`}>
+						{conversation.isGroupChat ? `${conversation.participants?.length || 0} participants` : `@${conversation.username || "user"}`}
+					</p>
+				</div>
 			</div>
 		</div>
-
 	);
 };
 export default Conversation;

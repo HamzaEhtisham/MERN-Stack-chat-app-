@@ -18,7 +18,7 @@ const useListenMessages = () => {
 			if (selectedConversation && selectedConversation._id === newMessage.senderId) {
 				newMessage.shouldShake = true;
 				newMessage.status = "read";
-				setMessages([...messages, newMessage]);
+				setMessages((prev) => [...prev, newMessage]);
 				socket.emit("markAsRead", { messageId: newMessage._id, senderId: newMessage.senderId });
 			}
 		});
@@ -30,24 +30,24 @@ const useListenMessages = () => {
 				message.shouldShake = true;
 				const sound = new Audio(notificationSound);
 				sound.play();
-				setMessages([...messages, message]);
+				setMessages((prev) => [...prev, message]);
 			}
 		});
 
 		socket?.on("messagesRead", ({ readerId }) => {
 			if (selectedConversation && selectedConversation._id === readerId) {
-				setMessages(messages.map(m => m.status === "sent" ? { ...m, status: "read" } : m));
+				setMessages((prev) => prev.map(m => m.status === "sent" ? { ...m, status: "read" } : m));
 			}
 		});
 
 		socket?.on("messageStatusUpdated", ({ messageId, status }) => {
-			setMessages(messages.map(m => m._id === messageId ? { ...m, status } : m));
+			setMessages((prev) => prev.map(m => m._id === messageId ? { ...m, status } : m));
 		});
 
 		// Group read receipts — update readBy in messages when a member opens the group
 		socket?.on("groupMessagesRead", ({ groupId, readerId }) => {
 			if (selectedConversation && selectedConversation._id === groupId) {
-				setMessages(messages.map(m => {
+				setMessages((prev) => prev.map(m => {
 					const alreadyRead = m.readBy?.some(id => id.toString() === readerId.toString());
 					if (!alreadyRead) {
 						return { ...m, readBy: [...(m.readBy || []), readerId] };
@@ -64,6 +64,6 @@ const useListenMessages = () => {
 			socket?.off("messageStatusUpdated");
 			socket?.off("groupMessagesRead");
 		};
-	}, [socket, setMessages, messages, selectedConversation]);
+	}, [socket, setMessages, selectedConversation]);
 };
 export default useListenMessages;

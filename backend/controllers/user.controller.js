@@ -47,15 +47,26 @@ export const updateProfile = async (req, res) => {
 // ✅ Fetch all users except logged-in user
 export const getUsersForSidebar = async (req, res) => {
   try {
+    if (!req.user || !req.user._id) {
+      console.error("[Backend] Error in getUsersForSidebar: User context missing.");
+      return res.status(401).json({ error: "Unauthorized access: Please log in again." });
+    }
+
+    const mongoose = (await import("mongoose")).default;
+    if (mongoose.connection.readyState !== 1) {
+      console.error("[Backend] Error in getUsersForSidebar: Database not connected.");
+      return res.status(503).json({ error: "Database offline. Please try again in 10 seconds." });
+    }
+
     const loggedInUserId = req.user._id;
 
     const users = await User.find({ _id: { $ne: loggedInUserId } }).select(
       "-password"
     );
 
-    res.status(200).json(users);
+    res.status(200).json(Array.isArray(users) ? users : []);
   } catch (error) {
-    console.error("Error in getUsersForSidebar: ", error.message);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("[Backend] CRITICAL ERROR in getUsersForSidebar: ", error.stack || error.message);
+    res.status(500).json({ error: "Failed to reload chat list. Still safe to use other features." });
   }
 };

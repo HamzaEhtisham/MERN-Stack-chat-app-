@@ -20,18 +20,23 @@ const Messages = () => {
 	}, [messages, isTyping]);
 
 	return (
-		<div className='px-4 flex-1 overflow-auto'>
+		<div className='px-4 flex-1 overflow-auto custom-scrollbar relative z-10'>
 			{!loading &&
-				messages.length > 0 &&
+				Array.isArray(messages) && messages.length > 0 &&
 				messages.map((message) => (
-					<div key={message._id} ref={lastMessageRef}>
+					<div key={message._id} ref={lastMessageRef} className="animate-fade-in">
 						<Message message={message} />
 					</div>
 				))}
 
-			{loading && [...Array(3)].map((_, idx) => <MessageSkeleton key={idx} />)}
-			{!loading && messages.length === 0 && (
-				<p className='text-center'>Send a message to start the conversation</p>
+			{loading && [...Array(4)].map((_, idx) => <MessageSkeleton key={idx} />)}
+			{!loading && Array.isArray(messages) && messages.length === 0 && (
+				<div className="flex flex-col items-center justify-center h-full opacity-50 space-y-3">
+          <div className="w-16 h-16 rounded-full bg-slate-800/50 flex items-center justify-center">
+            <img src="/logo.png" alt="ChatVerse" className="w-8 h-8 object-contain grayscale opacity-50" />
+          </div>
+          <p className='text-center text-sm font-medium'>No messages yet. Send one to start the conversation!</p>
+        </div>
 			)}
 
 			{isTyping && (

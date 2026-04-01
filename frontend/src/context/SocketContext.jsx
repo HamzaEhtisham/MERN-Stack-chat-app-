@@ -15,11 +15,13 @@ export const SocketContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (authUser) {
-      const socket = io("https://mern-stack-chat-app-f91s.onrender.com", {
+      // Connects to the same host that served the page, which seamlessly supports DevTunnels + Vite Proxy
+      const socket = io(window.location.origin, {
         query: {
           userId: authUser._id,
         },
         withCredentials: true,
+        transports: ['polling', 'websocket'], // Failsafe for devtunnels
       });
 
       setSocket(socket);

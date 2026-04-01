@@ -15,8 +15,10 @@ const useGetMessages = () => {
       try {
         // Always show cached data instantly
         const cached = await getLocalMessages(selectedConversation._id);
-        if (cached.length > 0) {
+        if (cached && Array.isArray(cached) && cached.length > 0) {
           setMessages(cached);
+        } else {
+          setMessages([]); // Fallback to empty instead of letting it be old data
         }
 
         // If online, refresh from server
@@ -26,12 +28,21 @@ const useGetMessages = () => {
             : `/api/messages/${selectedConversation._id}`;
 
           const res = await fetch(endpoint, { credentials: "include" });
-          const data = await res.json();
-          if (data.error) throw new Error(data.error);
+          
+          if (!res.ok) {
+            throw new Error(`Failed to fetch messages: ${res.statusText}`);
+          }
 
-          setMessages(data);
+          const data = await res.json();
+          if (data && data.error) throw new Error(data.error);
+
+          const messagesArray = Array.isArray(data) ? data : [];
+          setMessages(messagesArray);
+
           // Save fresh data to IndexedDB
-          await saveMessages(selectedConversation._id, data);
+          if (messagesArray.length > 0) {
+            await saveMessages(selectedConversation._id, messagesArray);
+          }
         }
       } catch (error) {
         if (!navigator.onLine) {

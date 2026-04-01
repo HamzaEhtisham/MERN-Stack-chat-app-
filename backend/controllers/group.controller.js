@@ -45,6 +45,17 @@ export const createGroupChat = async (req, res) => {
 // Get all group chats for a user
 export const getGroupChats = async (req, res) => {
 	try {
+		if (!req.user || !req.user._id) {
+			console.error("[Backend] Error in getGroupChats: User context missing.");
+			return res.status(401).json({ error: "Access denied. Please log in." });
+		}
+
+		const mongoose = (await import("mongoose")).default;
+		if (mongoose.connection.readyState !== 1) {
+			console.error("[Backend] Error in getGroupChats: Database not connected.");
+			return res.status(503).json({ error: "Service unavailable. Retrying database connection..." });
+		}
+
 		const userId = req.user._id;
 
 		const groupChats = await Conversation.find({
@@ -55,10 +66,10 @@ export const getGroupChats = async (req, res) => {
 			.populate("groupAdmin", "-password")
 			.sort({ updatedAt: -1 });
 
-		res.status(200).json(groupChats);
+		res.status(200).json(Array.isArray(groupChats) ? groupChats : []);
 	} catch (error) {
-		console.log("Error in getGroupChats controller: ", error.message);
-		res.status(500).json({ error: "Internal server error" });
+		console.error("[Backend] CRITICAL ERROR in getGroupChats: ", error.stack || error.message);
+		res.status(500).json({ error: "Internal server error: Group fetching failed." });
 	}
 };
 

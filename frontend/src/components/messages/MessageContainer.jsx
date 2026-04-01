@@ -39,17 +39,17 @@ const MessageContainer = () => {
 			) : (
 				<>
 					{/* Header */}
-					<div className='chatverse-glass px-6 py-4 flex items-center justify-between z-10 border-b border-white/5'>
-						<div className="flex items-center gap-4">
+					<div className='chatverse-glass px-4 md:px-6 py-3.5 md:py-4 flex items-center justify-between z-10 border-b border-white/5'>
+						<div className="flex items-center gap-3 md:gap-4">
               <button 
                 onClick={() => setSelectedConversation(null)}
-                className="md:hidden p-2 -ml-2 rounded-xl hover:bg-white/5 text-slate-400"
+                className="md:hidden p-2 -ml-2 rounded-xl hover:bg-white/5 text-cyan-400 active:scale-90 transition-all"
               >
-                <HiChevronLeft size={24} />
+                <HiChevronLeft size={28} />
               </button>
 							{selectedConversation.isGroupChat ? (
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center shadow-lg">
+                <div className="flex items-center gap-2.5 md:gap-3">
+                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center shadow-lg">
                     {selectedConversation.groupPic ? (
                       <img 
                         src={selectedConversation.groupPic} 
@@ -60,22 +60,22 @@ const MessageContainer = () => {
                         }}
                       />
                     ) : (
-                      <FaUsers className="text-white text-xl" />
+                      <FaUsers className="text-white text-lg md:text-xl" />
                     )}
                   </div>
                   <div>
-                    <h3 className='text-white font-bold tracking-wide'>{selectedConversation.groupName}</h3>
-                    <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest">{selectedConversation.participants?.length || 0} Members</p>
+                    <h3 className='text-sm md:text-base text-white font-bold tracking-wide truncate max-w-[150px] sm:max-w-none'>{selectedConversation.groupName}</h3>
+                    <p className="text-[9px] md:text-[10px] text-cyan-400 font-bold uppercase tracking-widest">{selectedConversation.participants?.length || 0} Members</p>
                   </div>
                 </div>
 							) : (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 md:gap-3">
                   <div className={`avatar ${onlineUsers?.includes(selectedConversation._id) ? "online" : ""}`}>
-                    <div className="w-10 h-10 rounded-xl">
+                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl overflow-hidden">
                       <img 
                         src={selectedConversation.profilePic || `https://ui-avatars.com/api/?name=${selectedConversation.fullName}&background=06b6d4&color=fff`} 
                         alt="user avatar" 
-                        className="w-full h-full object-cover rounded-xl"
+                        className="w-full h-full object-cover"
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = `https://ui-avatars.com/api/?name=${selectedConversation.fullName}&background=06b6d4&color=fff`;
@@ -84,8 +84,8 @@ const MessageContainer = () => {
                     </div>
                   </div>
                   <div>
-                    <h3 className='text-white font-bold tracking-wide'>{selectedConversation.fullName}</h3>
-                    <p className={`text-[10px] font-bold uppercase tracking-widest ${onlineUsers?.includes(selectedConversation._id) ? "text-green-400" : "text-slate-500"}`}>
+                    <h3 className='text-sm md:text-base text-white font-bold tracking-wide truncate max-w-[150px] sm:max-w-none'>{selectedConversation.fullName}</h3>
+                    <p className={`text-[9px] md:text-[10px] font-bold uppercase tracking-widest ${onlineUsers?.includes(selectedConversation._id) ? "text-green-400" : "text-slate-500"}`}>
                       {onlineUsers?.includes(selectedConversation._id) ? "Online Now" : "Offline"}
                     </p>
                   </div>
@@ -93,15 +93,15 @@ const MessageContainer = () => {
 							)}
 						</div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               {selectedConversation.isGroupChat && (
                 <>
                   {isGroupAdmin && (
-                    <button onClick={() => setShowGroupProfileModal(true)} className="p-2.5 rounded-xl hover:bg-white/5 text-slate-400 transition-colors">
+                    <button onClick={() => setShowGroupProfileModal(true)} className="p-2 md:p-2.5 rounded-xl hover:bg-white/5 text-slate-400 transition-colors">
                       <FaEdit size={18} />
                     </button>
                   )}
-                  <button onClick={() => setShowGroupMembersModal(true)} className="p-2.5 rounded-xl hover:bg-white/5 text-slate-400 transition-colors">
+                  <button onClick={() => setShowGroupMembersModal(true)} className="p-2 md:p-2.5 rounded-xl hover:bg-white/5 text-slate-400 transition-colors">
                     <FaUsersCog size={18} />
                   </button>
                 </>
@@ -109,9 +109,17 @@ const MessageContainer = () => {
             </div>
 					</div>
 
+
 					<Messages />
 					<MessageInput />
 					
+					{/* WhatsApp-Style Chat Background Pattern */}
+					<div className="absolute inset-0 pointer-events-none opacity-[0.03] z-0 overflow-hidden">
+					  <div className="absolute inset-0" style={{ 
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 86c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm66-3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-46-45c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm54 24c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM10 60c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm50 35c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm80-70c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-40-15c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-60 10c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm100 50c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM70 70c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-40-40c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z' fill='%23ffffff' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+              backgroundAttachment: 'fixed'
+            }} />
+					</div>
 					{showGroupProfileModal && (
 						<GroupProfileModal isOpen={showGroupProfileModal} onClose={() => setShowGroupProfileModal(false)} group={selectedConversation} />
 					)}

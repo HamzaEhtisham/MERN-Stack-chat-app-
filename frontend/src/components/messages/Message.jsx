@@ -24,9 +24,9 @@ const Message = ({ message }) => {
 	const allRead = readByCount >= totalOtherMembers && totalOtherMembers > 0;
 
 	return (
-		<div className={`chat ${chatClassName} my-2`}>
+		<div className={`chat ${chatClassName} my-3 px-2`}>
 			<div className='chat-image avatar'>
-				<div className='w-10 rounded-full'>
+				<div className='w-9 rounded-xl overflow-hidden shadow-md ring-1 ring-white/5'>
 					<img 
 						alt='user avatar' 
 						src={profilePic || `https://ui-avatars.com/api/?name=${senderName || 'U'}&background=0D8ABC&color=fff`} 
@@ -34,31 +34,38 @@ const Message = ({ message }) => {
 					/>
 				</div>
 			</div>
-			{senderName && <div className="chat-header text-xs opacity-70 mb-1">{senderName}</div>}
-			<div className={`chat-bubble text-white ${bubbleBgColor} ${shakeClass} pb-2 flex flex-col gap-2`}>
+			{senderName && <div className="chat-header text-[10px] font-bold text-cyan-400/80 uppercase tracking-widest ml-1 mb-1">{senderName}</div>}
+			
+      <div className={`chat-bubble min-w-[80px] max-w-[85%] md:max-w-[70%] shadow-lg ${bubbleBgColor} ${shakeClass} p-3 relative
+        ${fromMe ? 'rounded-2xl rounded-tr-none' : 'rounded-2xl rounded-tl-none'}
+      `}>
 				{message.image && (
 					<img 
 						src={message.image} 
 						alt="Attachment" 
-						className="max-w-[200px] sm:max-w-[250px] rounded-md object-contain"
+						className="w-full rounded-lg mb-2 object-contain border border-white/10"
 					/>
 				)}
-				{message.message && <p>{message.message}</p>}
-			</div>
-			<div className='chat-footer opacity-50 text-xs flex gap-1 items-center'>
-				{formattedTime}
-				{fromMe && !isGroupChat && (
-					<span className={message.status === "read" ? "text-blue-400" : message.status === "pending" ? "text-yellow-400" : "text-gray-400"}>
-						{message.status === "pending" ? <BsClock size={12} /> : message.status === "read" ? <BsCheck2All size={16} /> : <BsCheck2 size={16} />}
-					</span>
-				)}
-				{fromMe && isGroupChat && (
-					<span className={message.status === "pending" ? "text-yellow-400" : allRead ? "text-blue-400" : readByCount > 0 ? "text-gray-300" : "text-gray-500"}>
-						{message.status === "pending" ? <BsClock size={12} /> : allRead ? <BsCheck2All size={16} /> : readByCount > 0 ? <BsCheck2All size={16} /> : <BsCheck2 size={16} />}
-					</span>
-				)}
+				<div className="flex flex-col gap-1">
+          {message.message && <p className="text-sm md:text-base leading-relaxed font-medium">{message.message}</p>}
+          
+          <div className='flex justify-end items-center gap-1 mt-1 opacity-60'>
+            <span className="text-[10px] font-bold">{formattedTime}</span>
+            {fromMe && !isGroupChat && (
+              <span className={message.status === "read" ? "text-cyan-200" : "text-white/60"}>
+                {message.status === "pending" ? <BsClock size={10} /> : message.status === "read" ? <BsCheck2All size={14} /> : <BsCheck2 size={14} />}
+              </span>
+            )}
+            {fromMe && isGroupChat && (
+              <span className={allRead ? "text-cyan-200" : "text-white/60"}>
+                {message.status === "pending" ? <BsClock size={10} /> : allRead ? <BsCheck2All size={14} /> : <BsCheck2 size={14} />}
+              </span>
+            )}
+          </div>
+        </div>
 			</div>
 		</div>
+
 	);
 };
 export default Message;
